@@ -1,4 +1,4 @@
-# $Id: ClamAV.pm,v 1.4 2004/06/22 00:37:17 cfaber Exp $
+# $Id: ClamAV.pm,v 1.6 2004/06/22 20:29:39 cfaber Exp $
 
 package File::Scan::ClamAV;
 use strict;
@@ -6,11 +6,11 @@ use vars qw($VERSION);
 use File::Find qw(find);
 use IO::Socket;
 
-$VERSION = '1.05';
+$VERSION = '1.06';
 
 =head1 NAME
 
-Clamd - Connect to a local clamd service and send commands
+File::Scan::ClamAV - Connect to a local Clam Anti-Virus clamd service and send commands
 
 =head1 SYNOPSIS
 
@@ -59,15 +59,57 @@ By default the ClamAV clamd service will stop scanning at the first virus it det
 Examples:
 
   # Stop at first virus
+  use File::Scan::ClamAV;
+
   my $av = new File::Scan::ClamAV;
   my ($file, $virus) = $av->scan('/home/bob');
   
+
+
   # Return all viruses
+  use File::Scan::ClamAV;
   my $av = new File::Scan::ClamAV(find_all => 1);
   my %caught = $av->scan('/home/bob');
 
+
+
   # Scan a file from command line:
   perl -MFile::Scan::ClamAV -e 'printf("%s: %s\n", File::Scan::ClamAV->new->scan($ARGV[0]))' /home/bob/file.zip
+
+
+
+  # Preform a stream-scan on a scalar
+  use File::Scan::ClamAV;
+
+  if($ARGV[0] =~ /(.+)/){
+	my $file = $1;
+
+	if(-f $file){
+		my $data;
+		if(open(my $fh, $file)){
+			local $/;
+			$data = <$fh>;
+			close($fh);
+		} else {
+			die "Unable to read file: $file $!\n";
+		}
+
+		my $av = new File::Scan::ClamAV;
+
+		my ($code, $virus) = $av->streamscan($data);
+
+		if($code eq 'OK'){
+			print "The file: $file did not contain any virus known to ClamAV\n";
+		} elsif($code eq 'FOUND'){
+			print "The file: $file contained the virus: $virus\n";
+		} else {
+			print $av->errstr . "\n";
+		}
+	} else {
+		print "Unknown file: $file\n";
+	}
+ }
+
 
 =cut
 
