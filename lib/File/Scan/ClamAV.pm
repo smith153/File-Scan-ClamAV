@@ -1,4 +1,5 @@
-# $Id: ClamAV.pm,v 1.6 2004/06/22 20:29:39 cfaber Exp $
+# $Id: ClamAV.pm,v 1.8 2004/09/17 22:07:51 cfaber Exp $
+# Author: Colin Faber cfaber@fpsn.net
 
 package File::Scan::ClamAV;
 use strict;
@@ -6,7 +7,7 @@ use vars qw($VERSION);
 use File::Find qw(find);
 use IO::Socket;
 
-$VERSION = '1.06';
+$VERSION = $1 if('$Id: ClamAV.pm,v 1.8 2004/09/17 22:07:51 cfaber Exp $' =~ /,v ([\d.]+) /);
 
 =head1 NAME
 
@@ -163,7 +164,6 @@ sub scan {
 	@results = $self->_scan('SCAN', @_);
  } else {
 	@results = $self->_scan_shallow('SCAN', @_);
-	return ($_->[0], $_->[1]);
  }
 
  my %f;
@@ -171,8 +171,11 @@ sub scan {
 	$f{ $_->[0] } = $_->[1];
  }
 
- return %f;
-
+ if(%f){
+	return %f;
+ } else {
+	return;
+ }
 }
 
 =head2 rawscan($dir_or_file)
@@ -197,8 +200,11 @@ sub rawscan {
 	$f{ $_->[0] } = $_->[1];
  }
 
- return %f;
-
+ if(%f){
+	return %f;
+ } else {
+	return;
+ }
 }
 
 =head2 streamscan($data);

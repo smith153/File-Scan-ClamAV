@@ -1,4 +1,11 @@
 File::Scan::ClamAV Changes
+1.8
+     - New versioning schema, it now uses the CVS version
+       for the module dist version.
+
+       Fixed bug reported by rt.cpan.org users in the scan()
+       routine.
+
 1.06
      - Documentation update
      
