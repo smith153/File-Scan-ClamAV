@@ -1,0 +1,19 @@
+Changes
+MANIFEST
+MANIFEST.SKIP
+Makefile.PL
+README
+lib/File/Scan/ClamAV.pm
+t/00basic.t
+t/01ping.t
+t/02reload.t
+t/03quit.t
+t/04scan.t
+t/05rawscan.t
+t/06streamscan.t
+t/mkconf.pl
+testfiles/clamavtest
+testfiles/clamavtest.gz
+testfiles/clamavtest.zip
+testfiles/innocent
+META.yml                                 Module meta-data (added by MakeMaker)
