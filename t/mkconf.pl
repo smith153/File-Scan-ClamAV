@@ -8,12 +8,9 @@ my $dir = cwd;
 
 print CONF <<"EOCONF";
 LocalSocket $dir/clamsock
-Foreground
+Foreground true
 MaxThreads 1
-ScanArchive
-ArchiveMaxFileSize 1M
-ArchiveMaxRecursion 1
-ArchiveMaxFiles 2
+ScanArchive true
   
 EOCONF
 

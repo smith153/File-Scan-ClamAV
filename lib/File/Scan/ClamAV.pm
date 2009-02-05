@@ -1,5 +1,5 @@
-# $Id: ClamAV.pm,v 1.8 2004/09/17 22:07:51 cfaber Exp $
-# Author: Colin Faber cfaber@fpsn.net
+# $Id: ClamAV.pm,v 1.9 2009/02/05 23:22:51 jamtur Exp $
+# Author: Colin Faber cfaber@fpsn.net, James Turnbull james@lovedthanlost.net
 
 package File::Scan::ClamAV;
 use strict;
@@ -7,7 +7,7 @@ use vars qw($VERSION);
 use File::Find qw(find);
 use IO::Socket;
 
-$VERSION = $1 if('$Id: ClamAV.pm,v 1.8 2004/09/17 22:07:51 cfaber Exp $' =~ /,v ([\d.]+) /);
+$VERSION = $1 if('$Id: ClamAV.pm,v 1.9 2009/02/05 23:22:51 jamtur Exp $' =~ /,v ([\d.]+) /);
 
 =head1 NAME
 
@@ -178,35 +178,6 @@ sub scan {
  }
 }
 
-=head2 rawscan($dir_or_file)
-
-Same as scan(), but does not scan inside of archives.
-
-=cut
-
-sub rawscan {
- my $self = shift;
- $self->_seterrstr;
- my @results;
-
- if($self->{find_all}) {
-	@results = $self->_scan('RAWSCAN', @_);
- } else {
-	@results = $self->_scan_shallow('RAWSCAN', @_);
- }
-
- my %f;
- for(@results){
-	$f{ $_->[0] } = $_->[1];
- }
-
- if(%f){
-	return %f;
- } else {
-	return;
- }
-}
-
 =head2 streamscan($data);
 
 Preform a scan on a stream of data for viruses with the ClamAV clamd module.
@@ -327,7 +298,7 @@ sub _scan {
  }
 
  if(!@files) {
-	return $self->_seterrstr("scan() and rawscan() require that you specify a directory or file to scan");
+	return $self->_seterrstr("scan() requires that you specify a directory or file to scan");
  }
     
  my @results;
