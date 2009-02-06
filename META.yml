@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                File-Scan-ClamAV
-version:             1.9
+version:             1.91
 abstract:            A simple interface to the Clam Anti-Virus system
 license:             ~
 author:              

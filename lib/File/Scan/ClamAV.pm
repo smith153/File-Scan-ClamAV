@@ -1,13 +1,14 @@
-# $Id: ClamAV.pm,v 1.9 2009/02/05 23:22:51 jamtur Exp $
+# $Id: ClamAV.pm,v 1.91 2009/02/07 12:43:13 jamtur Exp $
 # Author: Colin Faber cfaber@fpsn.net, James Turnbull james@lovedthanlost.net
 
 package File::Scan::ClamAV;
 use strict;
+use warnings;
 use vars qw($VERSION);
 use File::Find qw(find);
 use IO::Socket;
 
-$VERSION = $1 if('$Id: ClamAV.pm,v 1.9 2009/02/05 23:22:51 jamtur Exp $' =~ /,v ([\d.]+) /);
+$VERSION = $1 if('$Id: ClamAV.pm,v 1.91 2009/02/07 12:43:13 jamtur Exp $' =~ /,v ([\d.]+) /);
 
 =head1 NAME
 
@@ -111,6 +112,7 @@ Examples:
 	}
  }
 
+=back
 
 =cut
 
@@ -176,6 +178,17 @@ sub scan {
  } else {
 	return;
  }
+}
+
+=head2 rawscan($dir_or_file)
+
+This method has been deprecated - use scan() instead
+
+=cut
+
+sub rawscan {
+ warn "The rawscan() method is deprecated - using scan() instead";
+ shift->scan(@_);
 }
 
 =head2 streamscan($data);

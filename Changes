@@ -1,8 +1,15 @@
 File::Scan::ClamAV Changes
+1.91
+     - Deprecated rawscan) and replaced with scan() to maintain backwards
+       compatibility
+
+     - Tidied module 
+
 1.9 
      - Fix for https://rt.cpan.org/Ticket/Display.html?id=26684
    
-     - Removed rawscan() as ClamAV no longer supports this - use scan() instead
+     - Removed rawscan() as ClamAV no longer supports this - use 
+       scan() instead
 
 1.8
      - New versioning schema, it now uses the CVS version

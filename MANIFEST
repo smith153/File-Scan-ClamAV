@@ -10,6 +10,8 @@ t/02reload.t
 t/03quit.t
 t/04scan.t
 t/05streamscan.t
+t/pod.t
+t/pod-coverage.t
 t/mkconf.pl
 testfiles/clamavtest
 testfiles/clamavtest.gz
