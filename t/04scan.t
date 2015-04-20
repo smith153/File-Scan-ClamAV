@@ -13,7 +13,7 @@ if (!$pid) {
     exec "$ENV{CLAMD_PATH}/clamd -c clamav.conf";
     die "clamd failed to start: $!";
 }
-for (1..10) {
+for (1..60) {
   last if (-e "clamsock");
   if (kill(0 => $pid) == 0) {
     die "clamd appears to have died";
