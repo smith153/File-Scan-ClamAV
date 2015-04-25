@@ -56,6 +56,10 @@ Note: there is no way to connect to a clamd on another machine. The reason for t
 
 By default the ClamAV clamd service will stop scanning at the first virus it detects. This is useful for performance, but sometimes you want to find all possible viruses in all of the files. To do that, specify a true value for find_all.
 
+=item * host
+
+Set what host to connect to if using TCP. Defaults to localhost. This can be handy to use with the C<streamscan> method to enable sending data to a remote ClamAV daemon.
+
 Examples:
 
   # Stop at first virus
@@ -119,6 +123,7 @@ sub new {
     my (%options) = @_;
     $options{port} ||= '/tmp/clamd';
     $options{find_all} ||= 0;
+    $options{host} ||= 'localhost';
     return bless \%options, $class;
 }
 
@@ -283,6 +288,45 @@ sub errstr {
  return $self->{'.errstr'};
 }
 
+=head2 host()
+
+Return current host used for TCP connections.
+
+If passed an IP or Hostname, will set and return.
+
+=cut
+
+sub host {
+ my ($self, $host) = @_;
+
+ if($host){
+    $self->{host} = $host;
+ }
+ 
+ return $self->{host};
+}
+
+=head2 port()
+
+Return current port used.
+
+If passed a digit or socket file, will set and return.
+
+Values that contain non-digits will be treated as a local UNIX socket.
+
+=cut
+
+sub port {
+ my ($self, $port) = @_;
+
+ if($port){
+    $self->{port} = $port;
+ }
+ 
+ return $self->{port};
+}
+
+
 sub _scan {
  my $self = shift;
  my $cmd = shift;
@@ -379,6 +423,8 @@ sub _seterrstr {
  return;
 }
 
+#TODO: set a timeout and fork so we don't 
+#get stuck waiting too long on clamd?
 sub _send {
  my $self = shift();
  my $fh = shift(); 
@@ -401,7 +447,7 @@ sub _get_tcp_connection {
  $port ||= $self->{port};
 
  return IO::Socket::INET->new(
-	PeerAddr	=> 'localhost',
+	PeerAddr	=> $self->host,
 	PeerPort	=> $port,
 	Proto		=> 'tcp',
 	Type		=> SOCK_STREAM,
@@ -419,6 +465,13 @@ sub _get_unix_connection {
 
 1;
 __END__
+
+=head1 CAVEATS
+
+=head2 Supported Operating Systems
+
+Currenly only Linux-like systems are supported. Patches are welcome.
+
 
 =head1 AUTHOR
 
