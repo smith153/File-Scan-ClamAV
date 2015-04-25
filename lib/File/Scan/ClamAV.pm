@@ -201,7 +201,12 @@ On failure it sets the errstr() error handler.
 =cut
 
 sub streamscan {
- my ($self, $data) = @_;
+ my $self = shift();
+ my $data = shift();
+
+ if(@_){ #don't join unless needed [cpan #78769]
+    $data = join('',($data,@_));
+ }
 
  $self->_seterrstr;
 
@@ -300,11 +305,11 @@ sub _scan {
  # Directories
  for my $dir (@_){
 	next unless -d $dir;
-	find(sub {
+    find({untaint =>1, wanted=>  sub {
 		if(-f $File::Find::name) {
 			push @files, $File::Find::name;
 		}
-	}, $dir);
+	}}, $dir);
  }
 
  if(!@files) {
