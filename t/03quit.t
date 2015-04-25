@@ -17,7 +17,7 @@ if (!$pid) {
     die "clamd failed to start: $!";
 }
 
-for (1..60) {
+for (1..120) {
   last if (-e "clamsock");
   if (kill(0 => $pid) == 0) {
     die "clamd appears to have died";
