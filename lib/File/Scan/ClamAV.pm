@@ -5,7 +5,7 @@ use warnings;
 use File::Find qw(find);
 use IO::Socket;
 
-our $VERSION = "1.92";
+our $VERSION = "1.93";
 $VERSION = eval $VERSION;
 
 =head1 NAME
@@ -200,9 +200,7 @@ On failure it sets the errstr() error handler.
 =cut
 
 sub streamscan {
- my ($self) = shift;
-
- my $data = join '', @_;
+ my ($self, $data) = @_;
 
  $self->_seterrstr;
 
@@ -376,8 +374,11 @@ sub _seterrstr {
 }
 
 sub _send {
- my ($self, $fh, $data) = @_;
- return syswrite $fh, $data, length($data);
+ my $self = shift();
+ my $fh = shift(); 
+
+ #use alias to save mem [cpan #78769]
+ return syswrite $fh, $_[0], length($_[0]);
 }
 
 sub _get_connection {
