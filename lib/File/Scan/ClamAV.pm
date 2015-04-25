@@ -1,14 +1,12 @@
-# $Id: ClamAV.pm,v 1.91 2009/02/07 12:43:13 jamtur Exp $
-# Author: Colin Faber cfaber@fpsn.net, James Turnbull james@lovedthanlost.net
 
 package File::Scan::ClamAV;
 use strict;
 use warnings;
-use vars qw($VERSION);
 use File::Find qw(find);
 use IO::Socket;
 
-$VERSION = $1 if('$Id: ClamAV.pm,v 1.91 2009/02/07 12:43:13 jamtur Exp $' =~ /,v ([\d.]+) /);
+our $VERSION = "1.92";
+$VERSION = eval $VERSION;
 
 =head1 NAME
 
