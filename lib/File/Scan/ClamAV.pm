@@ -444,15 +444,16 @@ sub _get_connection {
 
 sub _get_tcp_connection {
  my ($self, $port) = @_;
+ my $host = $self->host;
  $port ||= $self->{port};
 
  return IO::Socket::INET->new(
-	PeerAddr	=> $self->host,
+	PeerAddr	=> $host,
 	PeerPort	=> $port,
 	Proto		=> 'tcp',
 	Type		=> SOCK_STREAM,
 	Timeout		=> 10
- ) || $self->_seterrstr("Cannot connect to 'localhost:$port': $@");
+ ) || $self->_seterrstr("Cannot connect to '$host:$port': $@");
 }
 
 sub _get_unix_connection {
