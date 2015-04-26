@@ -50,7 +50,7 @@ Examples:
   # Use tcp/ip at port 3310
   my $av = new File::Scan::ClamAV(port => 3310);
 
-Note: there is no way to connect to a clamd on another machine. The reason for this is that clamd can only scan local files, so there would not be much point in doing this (unless you had NFS shares). Plus if you are using TCP/IP clamd appears to bind to all adaptors, so it is probably insecure. -ms
+Note: Other than using streamscan, there is no way to connect to a clamd on another machine. The reason for this is that clamd can only scan local files unless using the streamscan method.
 
 =item * find_all
 
