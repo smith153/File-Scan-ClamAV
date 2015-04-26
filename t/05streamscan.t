@@ -1,6 +1,5 @@
 use strict;
-use Test;
-BEGIN { plan tests => 8 }
+use Test::More tests => 7;
 use File::Scan::ClamAV;
 use Cwd;
 
@@ -22,12 +21,12 @@ for (1..120) {
 }
 
 my $av = new File::Scan::ClamAV(port => "clamsock");
-ok($av);
+ok($av, "Init ok");
 
 my $dir = cwd;
-ok($dir);
+ok($dir, "cd ok");
 my $test = "$dir/testfiles/clamavtest";
-ok(-f $test);
+ok(-f $test, "File exists");
 
 my $data;
 if(open(my $fh, $test)){
@@ -36,17 +35,15 @@ if(open(my $fh, $test)){
 	close($fh);
 }
 
-ok($data);
+ok($data, "Data exists");
 
 my ($ans, $vir) = $av->streamscan($data);
 
-ok($ans, 'FOUND');
-ok($vir, 'ClamAV-Test-Signature');
+cmp_ok($ans, 'eq', 'FOUND', "Positive hit");
+cmp_ok($vir, 'eq', 'ClamAV-Test-Signature', "Match correct sig");
 
-ok(kill(9 => $pid), 1);
+ok(kill(9 => $pid), "Kill ok");
 
-
-ok(1, 1);
 
 waitpid($pid, 0);
 unlink("clamsock");

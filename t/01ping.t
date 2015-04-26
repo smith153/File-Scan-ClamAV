@@ -1,6 +1,5 @@
 use strict;
-use Test;
-BEGIN { plan tests => 3 }
+use Test::More tests => 3;
 use File::Scan::ClamAV;
 use POSIX ":sys_wait_h";
 
@@ -22,9 +21,14 @@ for (1..120) {
 }
 
 my $av = new File::Scan::ClamAV(port => "clamsock");
-ok($av);
-ok($av->ping);
+ok($av, "Init ok");
 
-ok(kill(9 => $pid), 1);
+my $result = $av->ping;
+ok($result, "Ping ok");
+
+ok(kill(9 => $pid), "Kill ok");
 1 while (waitpid($pid, &WNOHANG) != -1);
 unlink("clamsock");
+
+my $out = `$ENV{CLAMD_PATH}/clamd -V`;
+BAIL_OUT("Couldn't ping so no use in going on. Executable: $out") unless $result;

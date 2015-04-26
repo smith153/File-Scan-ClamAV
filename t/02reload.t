@@ -1,6 +1,5 @@
 use strict;
-use Test;
-BEGIN { plan tests => 3 }
+use Test::More tests => 3;
 use File::Scan::ClamAV;
 
 do "t/mkconf.pl";
@@ -21,10 +20,10 @@ for (1..120) {
 }
 
 my $av = new File::Scan::ClamAV(port => "clamsock"); 
-ok($av);   
-ok($av->reload);
+ok($av, "Init ok");   
+ok($av->reload, "Reload ok");
 
-ok(kill(9 => $pid), 1);
+ok(kill(9 => $pid), "Kill ok");
 waitpid($pid, 0);
 unlink("clamsock");
 

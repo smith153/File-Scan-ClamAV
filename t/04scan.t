@@ -1,6 +1,6 @@
 use strict;
-use Test;
-BEGIN { plan tests => 8 }
+use Test::More tests => 8;
+
 use File::Scan::ClamAV;
 use Cwd;
 
@@ -22,23 +22,23 @@ for (1..120) {
 }
 
 my $av = new File::Scan::ClamAV(port => "clamsock", find_all => 1); 
-ok($av);   
+ok($av, "Init ok");   
 
 my $dir = cwd;
-ok($dir);
+ok($dir, "cd ok");
 
 my $testdir = "$dir/testfiles";
-ok(-d $testdir);
+ok(-d $testdir, "Dir exits");
 print "# Scanning $testdir\n";
 my %results = $av->scan($testdir);
 
 print "# Results: ", (map { "$_ => $results{$_}, " } keys(%results)), "\n";
-ok(exists($results{"$testdir/clamavtest"}), 1, "Didn't detect $testdir/clamavtest");
-ok(exists($results{"$testdir/clamavtest.zip"}), 1, "Didn't detect $testdir/clamavtest.zip");
-ok(exists($results{"$testdir/clamavtest.gz"}), 1, "Didn't detect $testdir/clamavtest.gz");
-ok(!exists($results{"$testdir/innocent"}), 1, "Accidentally detected $testdir/innocent file");
+ok(exists($results{"$testdir/clamavtest"}), "Didn't detect $testdir/clamavtest");
+ok(exists($results{"$testdir/clamavtest.zip"}), "Didn't detect $testdir/clamavtest.zip");
+ok(exists($results{"$testdir/clamavtest.gz"}), "Didn't detect $testdir/clamavtest.gz");
+ok(!exists($results{"$testdir/innocent"}), "Accidentally detected $testdir/innocent file");
 
-ok(kill(9 => $pid), 1);
+ok(kill(9 => $pid), "Kill ok");
 waitpid($pid, 0);
 unlink("clamsock");
 
