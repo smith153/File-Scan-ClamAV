@@ -4,6 +4,7 @@ File::Scan::ClamAV Changes
     - Reduce mem usage of streamscan() [cpan #78769]
     - untaint if using find_all
     - Add host attribute to enable remote scanning.
+    - Change test suite to Test::More
 
 1.92 2015-04-25
     - Increase test timeouts
