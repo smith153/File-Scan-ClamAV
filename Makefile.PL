@@ -18,6 +18,7 @@ WriteMakefile(
     'ABSTRACT' => 'A simple interface to the Clam Anti-Virus system',
     'AUTHOR' => 'Colin Faber <cfaber@fpsn.net>',
     'LICENSE' => 'perl_5',
+    'MIN_PERL_VERSION' => 5.006,
     'META_MERGE' => {
         'resources' =>  {
             'repository' => 'https://github.com/smith153/File-Scan-ClamAV',
