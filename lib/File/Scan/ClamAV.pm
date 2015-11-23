@@ -5,7 +5,7 @@ use warnings;
 use File::Find qw(find);
 use IO::Socket;
 
-our $VERSION = "1.93";
+our $VERSION = "1.94";
 $VERSION = eval $VERSION;
 
 =head1 NAME
