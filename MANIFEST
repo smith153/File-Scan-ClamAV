@@ -3,8 +3,9 @@ lib/File/Scan/ClamAV.pm
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
-MYMETA.json
-MYMETA.yml
+LICENSE
+META.json
+META.yml
 README
 t/00basic.t
 t/01ping.t

@@ -140,7 +140,9 @@ sub ping {
  my $conn = $self->_get_connection || return;
 
  $self->_send($conn, "PING\n");
- my $response = $conn->getline // '';
+ my $response = $conn->getline;
+ $response = '' unless defined($response);
+
  chomp($response);
 
  # Run out the buffer?
