@@ -1,12 +1,10 @@
-
 package File::Scan::ClamAV;
 use strict;
 use warnings;
 use File::Find qw(find);
 use IO::Socket;
 
-our $VERSION = "1.94";
-$VERSION = eval $VERSION;
+our $VERSION = '1.94';
 
 =head1 NAME
 
@@ -43,10 +41,10 @@ A port or socket to connect to if you do not wish to use the unix domain socket 
 Examples:
 
   my $av = new File::Scan::ClamAV; # Default - uses /tmp/clamd socket
-  
+
   # Use the unix domain socket at /var/sock/clam
   my $av = new File::Scan::ClamAV(port => '/var/sock/clam');
-  
+
   # Use tcp/ip at port 3310
   my $av = new File::Scan::ClamAV(port => 3310);
 
@@ -67,7 +65,7 @@ Examples:
 
   my $av = new File::Scan::ClamAV;
   my ($file, $virus) = $av->scan('/home/bob');
-  
+
 
 
   # Return all viruses
@@ -141,9 +139,9 @@ sub ping {
 
  $self->_send($conn, "PING\n");
  my $response = $conn->getline;
- $response = '' unless defined($response);
+ $response = q{} unless defined $response;
 
- chomp($response);
+ chomp $response ;
 
  # Run out the buffer?
  1 while (<$conn>);
@@ -193,8 +191,8 @@ This method has been deprecated - use scan() instead
 =cut
 
 sub rawscan {
- warn "The rawscan() method is deprecated - using scan() instead";
- shift->scan(@_);
+ warn 'The rawscan() method is deprecated - using scan() instead';
+ return shift->scan(@_);
 }
 
 =head2 streamscan($data);
@@ -208,11 +206,11 @@ On failure it sets the errstr() error handler.
 =cut
 
 sub streamscan {
- my $self = shift();
- my $data = shift();
+ my $self = shift;
+ my $data = shift;
 
  if(@_){ #don't join unless needed [cpan #78769]
-    $data = join('',($data,@_));
+    $data = join q{},($data,@_);
  }
 
  $self->_seterrstr;
@@ -222,13 +220,13 @@ sub streamscan {
  chomp(my $response = $conn->getline);
 
  my @return;
- if($response =~ /^PORT (\d+)/){
+ if($response =~ /^PORT (\d+)/x){
 	if((my $c = $self->_get_tcp_connection($1))){
 		$self->_send($c, $data);
 		$c->close;
 
 		chomp(my $r = $conn->getline);
-		if($r =~ /stream: (.+) FOUND/i){
+		if($r =~ /stream: (.+) FOUND/ix){
 			@return = ('FOUND', $1);
 		} else {
 			@return = ('OK');
@@ -304,7 +302,7 @@ sub host {
  if($host){
     $self->{host} = $host;
  }
- 
+
  return $self->{host};
 }
 
@@ -324,7 +322,7 @@ sub port {
  if($port){
     $self->{port} = $port;
  }
- 
+
  return $self->{port};
 }
 
@@ -335,19 +333,19 @@ sub _scan {
  my $options = {};
 
  if(ref($_[-1]) eq 'HASH') {
-	$options = pop(@_);
+	$options = pop @_;
  }
-    
+
  # Ugh - a bug in clamd makes us do every file
  # on a separate connection! So we will do a File::Find
  # ourselves to get all the files, then do each on
  # a separate connection to the daemon. Hopefully
  # this bug will be fixed and I can remove this horrible
  # hack. -ms
-    
+
  # Files
- my @files = grep { -f $_ } @_;
-    
+ my @files = grep { -f } @_;
+
  # Directories
  for my $dir (@_){
 	next unless -d $dir;
@@ -359,9 +357,9 @@ sub _scan {
  }
 
  if(!@files) {
-	return $self->_seterrstr("scan() requires that you specify a directory or file to scan");
+	return $self->_seterrstr('scan() requires that you specify a directory or file to scan');
  }
-    
+
  my @results;
 
  for(@files){
@@ -378,7 +376,7 @@ sub _scan_shallow {
  my $options = {};
 
  if(ref($_[-1]) eq 'HASH') {
-        $options = pop(@_);
+        $options = pop @_;
  }
 
  my @dirs = @_;
@@ -389,20 +387,20 @@ sub _scan_shallow {
 	$self->_send($conn, "$cmd $file\n");
 
 	for my $result ($conn->getline){
-		chomp($result);
+		chomp $result;
 
-		my @result = split(/\s/, $result);
+		my @result = split /\s/x, $result;
 
 		chomp(my $code = pop @result);
-		if($code !~ /^(?:ERROR|FOUND|OK)$/){
+		if($code !~ /^(?:ERROR|FOUND|OK)$/x){
 			$conn->close;
 
-			return $self->_seterrstr("Unknown response code from ClamAV service: $code - " . join(" ", @result));
+			return $self->_seterrstr("Unknown response code from ClamAV service: $code - " . join q{ }, @result);
 		}
 
 		my $virus = pop @result;
-		my $file = join(" ", @result);
-		$file =~ s/:$//g;
+		my $file = join q{ }, @result;
+		$file =~ s/:$//gx;
 
 		if($code eq 'ERROR'){
 			$conn->close;
@@ -425,19 +423,19 @@ sub _seterrstr {
  return;
 }
 
-#TODO: set a timeout and fork so we don't 
+#TODO: set a timeout and fork so we don't
 #get stuck waiting too long on clamd?
 sub _send {
- my $self = shift();
- my $fh = shift(); 
+ my $self = shift;
+ my $fh = shift;
 
  #use alias to save mem [cpan #78769]
- return syswrite $fh, $_[0], length($_[0]);
+ return syswrite $fh, $_[0], length $_[0];
 }
 
 sub _get_connection {
  my ($self) = @_;
- if($self->{port} =~ /\D/){
+ if($self->{port} =~ /\D/x){
 	return $self->_get_unix_connection;
  } else {
 	return $self->_get_tcp_connection;
@@ -450,11 +448,11 @@ sub _get_tcp_connection {
  $port ||= $self->{port};
 
  return IO::Socket::INET->new(
-	PeerAddr	=> $host,
-	PeerPort	=> $port,
-	Proto		=> 'tcp',
-	Type		=> SOCK_STREAM,
-	Timeout		=> 10
+        PeerAddr => $host,
+        PeerPort => $port,
+        Proto    => 'tcp',
+        Type     => SOCK_STREAM,
+        Timeout  => 10,
  ) || $self->_seterrstr("Cannot connect to '$host:$port': $@");
 }
 
@@ -474,7 +472,6 @@ __END__
 =head2 Supported Operating Systems
 
 Currenly only Linux-like systems are supported. Patches are welcome.
-
 
 =head1 AUTHOR
 
