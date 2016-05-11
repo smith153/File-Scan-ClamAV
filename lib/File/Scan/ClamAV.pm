@@ -216,25 +216,18 @@ sub streamscan {
  $self->_seterrstr;
 
  my $conn = $self->_get_connection || return;
- $self->_send($conn, "STREAM\n");
- chomp(my $response = $conn->getline);
+ $self->_send($conn, "nINSTREAM\n");
+ $self->_send($conn, pack("N", length($data)));
+ $self->_send($conn, $data);
+ $self->_send($conn, pack("N", 0));
+
+ chomp(my $r = $conn->getline);
 
  my @return;
- if($response =~ /^PORT (\d+)/x){
-	if((my $c = $self->_get_tcp_connection($1))){
-		$self->_send($c, $data);
-		$c->close;
-
-		chomp(my $r = $conn->getline);
-		if($r =~ /stream: (.+) FOUND/ix){
-			@return = ('FOUND', $1);
-		} else {
-			@return = ('OK');
-		}
-	} else {
-		$conn->close;
-		return;
-	}
+ if($r =~ /stream:\ (.+)\ FOUND/ix){
+	@return = ('FOUND', $1);
+ } else {
+	@return = ('OK');
  }
  $conn->close;
  return @return;
