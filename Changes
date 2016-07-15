@@ -1,5 +1,8 @@
 File::Scan::ClamAV Changes
 
+1.95 2016-07-15
+    - Add executable path error handling to tests
+    - Switch to "INSTREAM" for scanning streams
 1.94 2016-02-03
     - Fixes for increasing Kwalitee core metrics.
     - Fix compatibility with perl 5.6.
