@@ -3,7 +3,7 @@ use Test::More tests => 3;
 use File::Scan::ClamAV;
 use POSIX ":sys_wait_h";
 
-do "t/mkconf.pl";
+do "t/mkconf.pl" || BAIL_OUT("Failed to configure local clamd: $@");
 
 # start clamd
 my $pid = fork;
