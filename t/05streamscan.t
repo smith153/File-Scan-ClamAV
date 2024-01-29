@@ -40,7 +40,7 @@ ok($data, "Data exists");
 my ($ans, $vir) = $av->streamscan($data);
 
 cmp_ok($ans, 'eq', 'FOUND', "Positive hit");
-cmp_ok($vir, 'eq', 'Eicar-Test-Signature', "Match correct sig");
+cmp_ok($vir, 'eq', 'Win.Test.EICAR_HDB-1', "Match correct sig");
 
 ok(kill(9 => $pid), "Kill ok");
 
